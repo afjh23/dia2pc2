@@ -8,25 +8,31 @@ Este proyecto implementa un sistema de autenticación utilizando JSON Web Tokens
 - **Instalación de dependencias:**
   ```bash
   npm install express jsonwebtoken bcryptjs dotenv
+  ```
 Estas bibliotecas son esenciales para configurar el servidor Express, manejar tokens JWT, encriptar contraseñas, y gestionar variables de entorno.
 
 Configuración del archivo .env:
 Crea un archivo .env en la raíz del proyecto y añade las siguientes variables:
-makefile
-Copiar código
+
+ ```bash
 JWT_SECRET=mi_clave_secreta
 JWT_EXPIRES_IN=30m
+```
+
 JWT_SECRET: Esta clave se utiliza para firmar los tokens JWT.
 JWT_EXPIRES_IN: Define el tiempo de expiración de los tokens, en este caso, 30 minutos.
+
+
 ### 2. Implementación del Controlador de Autenticación
 Verificación de Credenciales y Generación de Token:
 Se creó un endpoint POST /login que recibe un nombre de usuario y una contraseña. Si las credenciales son válidas, se genera un token JWT con el id del usuario como payload y una fecha de expiración definida.
 
-javascript
-Copiar código
+ ```bash
 const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
 });
+ ```
+
 Expiración del Token:
 La expiración se maneja configurando la opción expiresIn al momento de generar el token. Este valor, tomado de process.env.JWT_EXPIRES_IN, asegura que el token caduque automáticamente después del periodo especificado.
 
@@ -34,14 +40,15 @@ La expiración se maneja configurando la opción expiresIn al momento de generar
 Verificación de Token:
 Se creó una ruta GET /verify que recibe el token en el encabezado de autorización. Esta ruta verifica si el token es válido y si no ha expirado.
 
-javascript
-Copiar código
+ ```bash
 jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
         return res.status(401).json({ message: 'Token inválido o ha expirado' });
     }
     res.status(200).json({ message: 'Token válido', userId: decoded.id });
 });
+ ```
+ 
 Si el token es válido y no ha expirado, se devuelve un mensaje de confirmación. Si no, se responde con un código de estado 401 y un mensaje de error.
 
 ### 4. Consideraciones de Seguridad
