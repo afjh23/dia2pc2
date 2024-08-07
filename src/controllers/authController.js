@@ -4,8 +4,8 @@ import {JWT_EXPIRES_IN, JWT_SECRET} from '../config/config.js'
 
 
 const users = [
-    {id:1, username: 'user1', password:bcrypt.hashSync('password1',8)},
-    {id:2, username: 'user2', password:bcrypt.hashSync('password2',8)}
+    {id:1, username: 'pedro', password:bcrypt.hashSync('pedro1',8)},
+    {id:2, username: 'juan', password:bcrypt.hashSync('juan2',8)}
 ]
 
 export const login = async (req,res) =>{

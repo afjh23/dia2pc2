@@ -17,20 +17,21 @@ Crea un archivo .env en la raíz del proyecto y añade las siguientes variables:
  ```bash
 JWT_SECRET=mi_clave_secreta
 JWT_EXPIRES_IN=30m
+PORT=3000
 ```
 
-JWT_SECRET: Esta clave se utiliza para firmar los tokens JWT.
-JWT_EXPIRES_IN: Define el tiempo de expiración de los tokens, en este caso, 30 minutos.
-
+- JWT_SECRET: Esta clave se utiliza para firmar los tokens JWT.  
+- JWT_EXPIRES_IN: Define el tiempo de expiración de los tokens, en este caso, 30 minutos.
+- PORT: Define el puerto que utilizaremos para correr la aplicación.
 
 ### 2. Implementación del Controlador de Autenticación
 Verificación de Credenciales y Generación de Token:
-Se creó un endpoint POST /login que recibe un nombre de usuario y una contraseña. Si las credenciales son válidas, se genera un token JWT con el id del usuario como payload y una fecha de expiración definida.
+Se creó un endpoint POST /login que recibe un nombre de usuario y una contraseña. Si las credenciales son válidas, se genera un token JWT con el id del usuario como payload y una fecha de expiración.
 
  ```bash
 const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
-});
+})
  ```
 
 Expiración del Token:
@@ -43,9 +44,9 @@ Se creó una ruta GET /verify que recibe el token en el encabezado de autorizaci
  ```bash
 jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-        return res.status(401).json({ message: 'Token inválido o ha expirado' });
+        return res.status(401).json({ message: 'Token inválido o ha expirado' })
     }
-    res.status(200).json({ message: 'Token válido', userId: decoded.id });
+    res.status(200).json({ message: 'Token válido', userId: decoded.id })
 });
  ```
  
@@ -53,16 +54,20 @@ Si el token es válido y no ha expirado, se devuelve un mensaje de confirmación
 
 ### 4. Consideraciones de Seguridad
 Almacenamiento Seguro de Contraseñas:
-Las contraseñas se encriptan utilizando bcryptjs para evitar que se almacenen en texto claro. Esto asegura que, en caso de una filtración de datos, las contraseñas no puedan ser fácilmente comprometidas.
+Las contraseñas se encriptan utilizando bcryptjs para mejorar la seguridad.
 
 Expiración de Tokens:
-La implementación de la expiración de tokens asegura que incluso si un token es interceptado, solo será válido por un tiempo limitado, reduciendo el riesgo de uso indebido.
+La implementación de la expiración de tokens asegura que incluso si un token es interceptado, solo será válido por un tiempo limitado.
 
 Manejo de Errores:
-El sistema está diseñado para manejar tokens expirados o inválidos de manera segura, rechazando solicitudes no autorizadas con los mensajes de error apropiados.
+El sistema está diseñado para manejar tokens expirados o inválidos de manera segura.
 
 ### 5. Pruebas
-Utiliza herramientas como Thunder Client o Postman para probar los endpoints:
+Utiliza herramientas como Thunder Client para probar los endpoints:
 
-/login: Enviar una solicitud POST con las credenciales del usuario para obtener un token JWT.
-/verify: Enviar una solicitud GET con el token JWT en el encabezado de autorización para verificar su validez.
+ ```bash
+/login: //Enviar una solicitud POST con las credenciales del usuario para obtener un token JWT.
+ ```
+ ```bash
+/verify: //Enviar una solicitud GET con el token JWT en el encabezado de autorización para verificar su validez.
+ ```
